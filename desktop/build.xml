@@ -1,0 +1,56 @@
+<!--
+  Copyright 2012 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<project name="ProoferDesktop" default="jar">
+    <propertyfile file="local.properties" />
+
+    <property name="src.dir" location="src" />
+    <property name="out.dir" location="out" />
+    <property name="lib.dir" location="lib" />
+    <property name="assets.dir" location="assets" />
+    <property name="classes.dir" location="${out.dir}/classes" />
+    <property name="out.jar" location="${out.dir}/${ant.project.name}.jar" />
+
+    <target name="clean" description="Delete all intermediate and output files.">
+        <delete dir="${out.dir}" />
+    </target>
+
+    <target name="compile" description="Compile Java source files.">
+        <mkdir dir="${classes.dir}" />
+        <javac sourcepath="" srcdir="${src.dir}" destdir="${classes.dir}" includeAntRuntime="true">
+            <classpath>
+                 <fileset dir="${lib.dir}" includes="*.jar" />
+            </classpath>
+
+            <include name="**/*.java" />
+        </javac>
+    </target>
+
+    <target name="jar" depends="compile" description="Generates the release JAR">
+        <delete file="${out.jar}" />
+
+        <available file="${assets.dir}/Proofer.apk" property="hasProoferAPK" />
+        <fail unless="hasProoferAPK"
+            message="The final Proofer APK hasn't been added to the assets directory." />
+
+        <copy overwrite="true" todir="${classes.dir}/assets/">
+            <fileset dir="${assets.dir}" />
+        </copy>
+        <jar destfile="${out.jar}"
+            basedir="${classes.dir}"
+            manifest="${src.dir}/META-INF/MANIFEST.MF" />
+    </target>
+</project>

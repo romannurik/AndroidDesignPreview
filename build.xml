@@ -1,0 +1,58 @@
+<!--
+  Copyright 2012 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<project name="Proofer" default="projecthelp">
+    <propertyfile file="local.properties" />
+
+    <property name="android.dir" location="android" />
+    <property name="desktop.dir" location="desktop" />
+    <property name="out.dir" location="out" />
+    <property name="mac.dir" location="mac" />
+    <property name="android.release.type" value="release" />
+    <!-- property name="android.release.type" value="debug" /-->
+
+    <target name="projecthelp">
+        <java classname="org.apache.tools.ant.Main">
+            <arg value="-projecthelp" />
+            <arg value="-buildfile" />
+            <arg value="${ant.file}" />
+        </java>
+    </target>
+
+    <target name="android" description="Generates the Android release APK">
+        <ant antfile="${android.dir}/build.xml" target="${android.release.type}" inheritAll="false" />
+    </target>
+
+    <target name="desktop" depends="android" description="Generates the Desktop JAR">
+        <copy overwrite="true"
+            tofile="${desktop.dir}/assets/Proofer.apk"
+            file="${android.dir}/bin/ProoferAndroid-${android.release.type}.apk" />
+        <ant antfile="${desktop.dir}/build.xml" target="jar" inheritAll="false" />
+    </target>
+
+    <target name="mac"
+        depends="desktop"
+        description="Generates the Mac bundle and distributable file.">
+        <exec executable="${mac.dir}/package_mac.sh" />
+    </target>
+
+    <target name="clean">
+        <delete file="${desktop.dir}/assets/Proofer.apk" />
+        <ant antfile="${desktop.dir}/build.xml" target="clean" inheritAll="false" />
+        <ant antfile="${android.dir}/build.xml" target="clean" inheritAll="false" />
+    </target>
+
+</project>

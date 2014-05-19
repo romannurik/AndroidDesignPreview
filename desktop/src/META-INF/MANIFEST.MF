@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Main-Class: com.google.android.desktop.proofer.ControllerForm
+Implementation-Title: Android Design Preview
+Implementation-Vendor: Google Inc.
+Implementation-Version: 0.3.2

@@ -1,0 +1,11 @@
+.DS_Store
+Thumbs.db
+*.pyc
+*.iws
+_sandbox
+local.properties
+gen
+bin
+out
+desktop/assets/Proofer.apk
+android/proofer.keystore
